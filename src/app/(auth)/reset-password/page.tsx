@@ -24,6 +24,7 @@ import { useSearchParams, useRouter } from "next/navigation"
 import { resetPassword } from "@/services/auth.service"
 import { toast } from "sonner"
 import { AxiosError } from "axios"
+import { Suspense } from "react"
 
 const formSchema = z
 	.object({
@@ -37,7 +38,7 @@ const formSchema = z
 		path: ["confirmPassword"],
 	})
 
-export default function ResetPasswordForm() {
+function ResetPasswordForm() {
 	const router = useRouter()
 	const searchParams = useSearchParams()
 	const token = searchParams.get("token")
@@ -118,5 +119,19 @@ export default function ResetPasswordForm() {
 				</CardContent>
 			</Card>
 		</div>
+	)
+}
+
+export default function ResetPasswordPage() {
+	return (
+		<Suspense
+			fallback={
+				<div className="flex items-center justify-center min-h-screen">
+					Loading...
+				</div>
+			}
+		>
+			<ResetPasswordForm />
+		</Suspense>
 	)
 }
