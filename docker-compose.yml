@@ -1,0 +1,27 @@
+version: "3.8"
+
+networks:
+  test:
+    external:
+      name: artifacts_test
+
+services:
+  medical-consent-ui:
+    container_name: medical-consent-ui
+    build:
+      # The context is now the current directory ('.') because the
+      # compose file is in the same directory as the Dockerfile.
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      # This mounts the current directory (the client code) into the container.
+      - .:/usr/src/app
+      # This still prevents node_modules from being overwritten.
+      - /usr/src/app/node_modules
+    working_dir: /usr/src/app
+    ports:
+      - "3002:3000"
+    networks:
+      - test
+    environment:
+      - NODE_ENV=development
