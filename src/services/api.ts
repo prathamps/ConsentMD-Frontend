@@ -2,7 +2,7 @@ import axios from "axios"
 import Cookies from "js-cookie"
 
 const api = axios.create({
-	baseURL: "http://40.114.45.2:3000/v1", // This should be in an env file
+	baseURL: process.env.REACT_APP_BASE_URLDNS || "https://40.114.45.2:3000/v1",
 	headers: {
 		"Content-Type": "application/json",
 	},
