@@ -2,7 +2,6 @@
 
 import * as React from "react"
 import Link from "next/link"
-import { Heart } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 interface FooterProps {
