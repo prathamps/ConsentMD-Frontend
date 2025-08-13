@@ -20,6 +20,7 @@ import {
 	FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { PasswordInput } from "@/components/ui/password-input"
 import Link from "next/link"
 import { login } from "@/services/auth.service"
 import { useAppDispatch } from "@/store/hooks"
@@ -83,15 +84,23 @@ export default function LoginForm() {
 	}
 
 	return (
-		<div className="flex items-center justify-center min-h-screen">
-			<Card className="mx-auto max-w-sm">
-				<CardHeader>
-					<CardTitle className="text-2xl">Login</CardTitle>
-					<CardDescription>
-						Enter your email below to login to your account
+		<div className="relative flex items-center justify-center min-h-screen p-4 bg-gradient-to-b from-background to-muted/20">
+			{/* Background decoration matching landing page */}
+			<div className="absolute inset-0 -z-10 overflow-hidden">
+				<div className="absolute -top-40 -right-32 h-80 w-80 rounded-full bg-primary/5 blur-3xl" />
+				<div className="absolute -bottom-40 -left-32 h-80 w-80 rounded-full bg-primary/5 blur-3xl" />
+			</div>
+
+			<Card className="w-full max-w-md mx-auto border-border/50 shadow-sm">
+				<CardHeader className="space-y-1 text-center pb-6">
+					<CardTitle className="text-2xl font-bold tracking-tight">
+						Welcome back
+					</CardTitle>
+					<CardDescription className="text-muted-foreground">
+						Enter your credentials to access your account
 					</CardDescription>
 				</CardHeader>
-				<CardContent>
+				<CardContent className="space-y-6">
 					<Form {...form}>
 						<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
 							<FormField
@@ -101,7 +110,11 @@ export default function LoginForm() {
 									<FormItem>
 										<FormLabel>Email</FormLabel>
 										<FormControl>
-											<Input placeholder="m@example.com" {...field} />
+											<Input
+												placeholder="Enter your email address"
+												type="email"
+												{...field}
+											/>
 										</FormControl>
 										<FormMessage />
 									</FormItem>
@@ -112,17 +125,20 @@ export default function LoginForm() {
 								name="password"
 								render={({ field }) => (
 									<FormItem>
-										<div className="flex items-center">
+										<div className="flex items-center justify-between">
 											<FormLabel>Password</FormLabel>
 											<Link
 												href="/forgot-password"
-												className="ml-auto inline-block text-sm underline"
+												className="text-sm text-primary hover:text-primary/80 underline underline-offset-4"
 											>
-												Forgot your password?
+												Forgot password?
 											</Link>
 										</div>
 										<FormControl>
-											<Input type="password" {...field} />
+											<PasswordInput
+												placeholder="Enter your password"
+												{...field}
+											/>
 										</FormControl>
 										<FormMessage />
 									</FormItem>
@@ -133,14 +149,35 @@ export default function LoginForm() {
 								className="w-full"
 								disabled={form.formState.isSubmitting}
 							>
-								{form.formState.isSubmitting ? "Logging in..." : "Login"}
+								{form.formState.isSubmitting ? (
+									<div className="flex items-center space-x-2">
+										<div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+										<span>Signing in...</span>
+									</div>
+								) : (
+									"Sign in"
+								)}
 							</Button>
 						</form>
 					</Form>
-					<div className="mt-4 text-center text-sm">
-						Don&apos;t have an account?{" "}
-						<Link href="/register" className="underline">
-							Sign up
+
+					<div className="relative">
+						<div className="absolute inset-0 flex items-center">
+							<span className="w-full border-t border-border" />
+						</div>
+						<div className="relative flex justify-center text-xs uppercase">
+							<span className="bg-background px-2 text-muted-foreground">
+								New to ConsentMD?
+							</span>
+						</div>
+					</div>
+
+					<div className="text-center">
+						<Link
+							href="/register"
+							className="text-sm text-primary hover:text-primary/80 underline underline-offset-4 font-medium"
+						>
+							Create an account
 						</Link>
 					</div>
 				</CardContent>
