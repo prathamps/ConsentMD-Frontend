@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Shield, Clock, Users, Stethoscope } from "lucide-react"
+import { Shield, Clock, Users } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 
@@ -33,12 +33,6 @@ const features: FeatureItem[] = [
 		description:
 			"Connect patients and providers seamlessly with our intuitive platform.",
 		icon: Users,
-	},
-	{
-		title: "Professional Tools",
-		description:
-			"Comprehensive diagnostic and documentation tools for healthcare providers.",
-		icon: Stethoscope,
 	},
 ]
 
