@@ -98,11 +98,6 @@ export default function RequestsPage() {
 		}
 	}
 
-	const handleCreateRecord = (patientId: string) => {
-		setSelectedPatientId(patientId)
-		setIsModalOpen(true)
-	}
-
 	const handleModalClose = () => {
 		setIsModalOpen(false)
 		setSelectedPatientId(null)
