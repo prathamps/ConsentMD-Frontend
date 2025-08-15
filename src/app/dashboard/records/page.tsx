@@ -341,7 +341,7 @@ export default function MyRecordsPage() {
 
 			{/* View Details Modal */}
 			<Dialog open={isViewModalOpen} onOpenChange={setIsViewModalOpen}>
-				<DialogContent>
+				<DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
 					<DialogHeader>
 						<DialogTitle>Record Details</DialogTitle>
 					</DialogHeader>
@@ -349,38 +349,48 @@ export default function MyRecordsPage() {
 						<div className="space-y-4 pt-4">
 							<div className="space-y-2">
 								<p className="font-semibold">Record ID</p>
-								<p className="rounded-md bg-muted p-2 text-sm text-muted-foreground break-all">
-									{selectedRecord.recordId}
-								</p>
+								<div className="rounded-md bg-muted p-3 text-sm text-muted-foreground">
+									<p className="font-mono text-xs break-words overflow-wrap-anywhere">
+										{selectedRecord.recordId}
+									</p>
+								</div>
 							</div>
 							<div className="space-y-2">
 								<p className="font-semibold">Patient Email</p>
-								<p className="rounded-md bg-muted p-2 text-sm text-muted-foreground">
-									{getEmailFromPatientId(selectedRecord.patientId)}
-								</p>
+								<div className="rounded-md bg-muted p-3 text-sm text-muted-foreground">
+									<p className="break-words">
+										{getEmailFromPatientId(selectedRecord.patientId)}
+									</p>
+								</div>
 							</div>
 							<div className="space-y-2">
 								<p className="font-semibold">Details</p>
-								<p className="rounded-md bg-muted p-2 text-sm text-muted-foreground">
-									{selectedRecord.details}
-								</p>
+								<div className="rounded-md bg-muted p-3 text-sm text-muted-foreground max-h-32 overflow-y-auto">
+									<p className="whitespace-pre-wrap break-words">
+										{selectedRecord.details}
+									</p>
+								</div>
 							</div>
 							<div className="space-y-2">
 								<p className="font-semibold">Created At</p>
-								<p className="rounded-md bg-muted p-2 text-sm text-muted-foreground">
-									{new Date(selectedRecord.createdAt).toLocaleString()}
-								</p>
+								<div className="rounded-md bg-muted p-3 text-sm text-muted-foreground">
+									<p className="break-words">
+										{new Date(selectedRecord.createdAt).toLocaleString()}
+									</p>
+								</div>
 							</div>
-							<DialogFooter className="!mt-6 flex justify-end gap-2">
+							<DialogFooter className="!mt-6 flex flex-col sm:flex-row justify-end gap-2">
 								<Button
 									variant="secondary"
 									onClick={() => openDocument(selectedRecord.recordId)}
+									className="w-full sm:w-auto"
 								>
 									View Document
 								</Button>
 								<Button
 									variant="outline"
 									onClick={() => setIsViewModalOpen(false)}
+									className="w-full sm:w-auto"
 								>
 									Close
 								</Button>
