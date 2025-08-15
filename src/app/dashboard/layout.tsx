@@ -11,7 +11,13 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import {
+	Sheet,
+	SheetContent,
+	SheetHeader,
+	SheetTitle,
+	SheetTrigger,
+} from "@/components/ui/sheet"
 import Sidebar from "./_components/sidebar"
 import { ModeToggle } from "@/components/mode-toggle"
 import { useAppDispatch, useAppSelector } from "@/store/hooks"
@@ -56,6 +62,9 @@ export default function DashboardLayout({
 							side="left"
 							className="flex flex-col w-[280px] sm:w-[320px]"
 						>
+							<SheetHeader>
+								<SheetTitle>Navigation Menu</SheetTitle>
+							</SheetHeader>
 							<Sidebar />
 						</SheetContent>
 					</Sheet>

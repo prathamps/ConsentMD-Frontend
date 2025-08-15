@@ -22,6 +22,7 @@ type Patient = {
 	id: string
 	name: string
 	email: string
+	blockchainId: string
 }
 
 export default function PatientsPage() {
@@ -113,7 +114,9 @@ export default function PatientsPage() {
 									</div>
 									<Button
 										variant="outline"
-										onClick={() => handleCreateRecordClick(patient.id)}
+										onClick={() =>
+											handleCreateRecordClick(patient.blockchainId)
+										}
 										className="w-full"
 									>
 										Create Medical Record
@@ -176,7 +179,9 @@ export default function PatientsPage() {
 												<Button
 													variant="outline"
 													size="sm"
-													onClick={() => handleCreateRecordClick(patient.id)}
+													onClick={() =>
+														handleCreateRecordClick(patient.blockchainId)
+													}
 												>
 													Create Medical Record
 												</Button>
