@@ -23,6 +23,7 @@ import { toast } from "sonner"
 import { Stethoscope } from "lucide-react"
 import { AxiosError } from "axios"
 import { Skeleton } from "@/components/ui/skeleton"
+import { Card, CardContent } from "@/components/ui/card"
 
 interface Doctor {
 	id: string
