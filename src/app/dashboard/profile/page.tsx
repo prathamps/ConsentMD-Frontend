@@ -84,67 +84,94 @@ export default function ProfilePage() {
 
 	if (isLoading) {
 		return (
-			<Card>
-				<CardHeader>
-					<Skeleton className="h-8 w-1/3" />
-					<Skeleton className="h-4 w-2/3" />
-				</CardHeader>
-				<CardContent className="space-y-4">
-					<div className="space-y-2">
-						<Skeleton className="h-4 w-1/4" />
-						<Skeleton className="h-10 w-full" />
-					</div>
-					<div className="space-y-2">
-						<Skeleton className="h-4 w-1/4" />
-						<Skeleton className="h-10 w-full" />
-					</div>
-					<Skeleton className="h-10 w-24" />
-				</CardContent>
-			</Card>
+			<div className="space-y-4 sm:space-y-6">
+				<Card>
+					<CardHeader>
+						<Skeleton className="h-6 sm:h-8 w-1/3" />
+						<Skeleton className="h-4 w-2/3" />
+					</CardHeader>
+					<CardContent className="space-y-4">
+						<div className="space-y-2">
+							<Skeleton className="h-4 w-1/4" />
+							<Skeleton className="h-10 w-full" />
+						</div>
+						<div className="space-y-2">
+							<Skeleton className="h-4 w-1/4" />
+							<Skeleton className="h-10 w-full" />
+						</div>
+						<Skeleton className="h-10 w-24" />
+					</CardContent>
+				</Card>
+			</div>
 		)
 	}
 
 	return (
-		<Card>
-			<CardHeader>
-				<CardTitle>My Profile</CardTitle>
-				<CardDescription>
-					Update your professional profile information. This will be visible to
-					patients.
-				</CardDescription>
-			</CardHeader>
-			<CardContent>
-				<form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-					<div className="space-y-2">
-						<Label htmlFor="name">Full Name</Label>
-						<Controller
-							name="name"
-							control={control}
-							render={({ field }) => <Input id="name" {...field} />}
-						/>
-					</div>
-					<div className="space-y-2">
-						<Label htmlFor="email">Email Address</Label>
-						<Input id="email" type="email" value={user?.email || ""} disabled />
-					</div>
-					<div className="space-y-2">
-						<Label htmlFor="specialization">Specialization</Label>
-						<Controller
-							name="specialization"
-							control={control}
-							render={({ field }) => <Input id="specialization" {...field} />}
-						/>
-					</div>
+		<div className="space-y-4 sm:space-y-6">
+			<Card>
+				<CardHeader>
+					<CardTitle className="text-lg sm:text-xl">My Profile</CardTitle>
+					<CardDescription className="text-sm sm:text-base">
+						Update your professional profile information. This will be visible
+						to patients.
+					</CardDescription>
+				</CardHeader>
+				<CardContent>
+					<form
+						onSubmit={handleSubmit(onSubmit)}
+						className="space-y-4 sm:space-y-6"
+					>
+						<div className="space-y-2">
+							<Label htmlFor="name" className="text-sm font-medium">
+								Full Name
+							</Label>
+							<Controller
+								name="name"
+								control={control}
+								render={({ field }) => (
+									<Input id="name" {...field} className="w-full" />
+								)}
+							/>
+						</div>
+						<div className="space-y-2">
+							<Label htmlFor="email" className="text-sm font-medium">
+								Email Address
+							</Label>
+							<Input
+								id="email"
+								type="email"
+								value={user?.email || ""}
+								disabled
+								className="w-full bg-muted"
+							/>
+						</div>
+						<div className="space-y-2">
+							<Label htmlFor="specialization" className="text-sm font-medium">
+								Specialization
+							</Label>
+							<Controller
+								name="specialization"
+								control={control}
+								render={({ field }) => (
+									<Input id="specialization" {...field} className="w-full" />
+								)}
+							/>
+						</div>
 
-					{error && <p className="text-red-500 text-sm">{error}</p>}
-					{successMessage && (
-						<p className="text-green-500 text-sm">{successMessage}</p>
-					)}
-					<Button type="submit" disabled={isSubmitting || !isDirty}>
-						{isSubmitting ? "Saving..." : "Save Changes"}
-					</Button>
-				</form>
-			</CardContent>
-		</Card>
+						{error && <p className="text-red-500 text-sm">{error}</p>}
+						{successMessage && (
+							<p className="text-green-500 text-sm">{successMessage}</p>
+						)}
+						<Button
+							type="submit"
+							disabled={isSubmitting || !isDirty}
+							className="w-full sm:w-auto"
+						>
+							{isSubmitting ? "Saving..." : "Save Changes"}
+						</Button>
+					</form>
+				</CardContent>
+			</Card>
+		</div>
 	)
 }

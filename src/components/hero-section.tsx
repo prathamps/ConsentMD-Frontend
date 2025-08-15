@@ -26,8 +26,8 @@ interface HeroSectionProps {
 }
 
 export function HeroSection({
-	headline = "Connect Healthcare Professionals and Patients Seamlessly",
-	subheadline = "Experience secure, efficient telemedicine consultations with our comprehensive platform designed for modern healthcare delivery.",
+	headline = "ConsentMD",
+	subheadline = "Manage patient records, consultations, and consent forms in one secure platform.",
 	primaryCTA = {
 		text: "Get Started",
 		href: "/register",
@@ -98,21 +98,18 @@ export function HeroSection({
 
 				{/* Trust indicators */}
 				<div className="pt-8 space-y-4">
-					<p className="text-sm text-muted-foreground font-medium">
-						Trusted by healthcare professionals worldwide
-					</p>
 					<div className="flex flex-wrap justify-center items-center gap-6 opacity-60">
 						<div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
 							<div className="h-2 w-2 rounded-full bg-green-500" />
-							HIPAA Compliant
+							Secure
 						</div>
 						<div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
 							<div className="h-2 w-2 rounded-full bg-blue-500" />
-							End-to-End Encrypted
+							Easy to Use
 						</div>
 						<div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
 							<div className="h-2 w-2 rounded-full bg-purple-500" />
-							24/7 Support
+							Reliable
 						</div>
 					</div>
 				</div>

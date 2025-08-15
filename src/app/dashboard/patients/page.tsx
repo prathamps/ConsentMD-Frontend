@@ -78,64 +78,121 @@ export default function PatientsPage() {
 	}
 
 	return (
-		<>
-			<Card>
+		<div className="space-y-4 sm:space-y-6">
+			{/* Mobile Card View */}
+			<div className="block sm:hidden space-y-4">
+				<h1 className="text-xl font-bold">My Patients</h1>
+				{isLoading ? (
+					Array.from({ length: 3 }).map((_, i) => (
+						<Card key={i}>
+							<CardContent className="p-4">
+								<div className="space-y-3">
+									<Skeleton className="h-4 w-3/4" />
+									<Skeleton className="h-4 w-1/2" />
+									<Skeleton className="h-10 w-full" />
+								</div>
+							</CardContent>
+						</Card>
+					))
+				) : error ? (
+					<Card>
+						<CardContent className="p-4 text-center text-red-500">
+							{error}
+						</CardContent>
+					</Card>
+				) : patients.length > 0 ? (
+					patients.map((patient) => (
+						<Card key={patient.id}>
+							<CardContent className="p-4">
+								<div className="space-y-3">
+									<div>
+										<p className="font-medium">{patient.name}</p>
+										<p className="text-sm text-muted-foreground truncate">
+											{patient.email}
+										</p>
+									</div>
+									<Button
+										variant="outline"
+										onClick={() => handleCreateRecordClick(patient.id)}
+										className="w-full"
+									>
+										Create Medical Record
+									</Button>
+								</div>
+							</CardContent>
+						</Card>
+					))
+				) : (
+					<Card>
+						<CardContent className="p-4 text-center">
+							You have no assigned patients.
+						</CardContent>
+					</Card>
+				)}
+			</div>
+
+			{/* Desktop Table View */}
+			<Card className="hidden sm:block">
 				<CardHeader>
 					<CardTitle>My Patients</CardTitle>
 				</CardHeader>
 				<CardContent>
-					<Table>
-						<TableHeader>
-							<TableRow>
-								<TableHead>Patient Name</TableHead>
-								<TableHead>Email</TableHead>
-								<TableHead className="text-right">Actions</TableHead>
-							</TableRow>
-						</TableHeader>
-						<TableBody>
-							{isLoading ? (
+					<div className="overflow-x-auto">
+						<Table>
+							<TableHeader>
 								<TableRow>
-									<TableCell>
-										<Skeleton className="h-4 w-[250px]" />
-									</TableCell>
-									<TableCell>
-										<Skeleton className="h-4 w-[250px]" />
-									</TableCell>
-									<TableCell className="text-right">
-										<Skeleton className="h-4 w-[180px]" />
-									</TableCell>
+									<TableHead>Patient Name</TableHead>
+									<TableHead>Email</TableHead>
+									<TableHead className="text-right">Actions</TableHead>
 								</TableRow>
-							) : error ? (
-								<TableRow>
-									<TableCell colSpan={3} className="text-center text-red-500">
-										{error}
-									</TableCell>
-								</TableRow>
-							) : patients.length > 0 ? (
-								patients.map((patient) => (
-									<TableRow key={patient.id}>
-										<TableCell>{patient.name}</TableCell>
-										<TableCell>{patient.email}</TableCell>
+							</TableHeader>
+							<TableBody>
+								{isLoading ? (
+									<TableRow>
+										<TableCell>
+											<Skeleton className="h-4 w-[200px]" />
+										</TableCell>
+										<TableCell>
+											<Skeleton className="h-4 w-[200px]" />
+										</TableCell>
 										<TableCell className="text-right">
-											<Button
-												variant="outline"
-												size="sm"
-												onClick={() => handleCreateRecordClick(patient.id)}
-											>
-												Create Medical Record
-											</Button>
+											<Skeleton className="h-4 w-[150px]" />
 										</TableCell>
 									</TableRow>
-								))
-							) : (
-								<TableRow>
-									<TableCell colSpan={3} className="text-center">
-										You have no assigned patients.
-									</TableCell>
-								</TableRow>
-							)}
-						</TableBody>
-					</Table>
+								) : error ? (
+									<TableRow>
+										<TableCell colSpan={3} className="text-center text-red-500">
+											{error}
+										</TableCell>
+									</TableRow>
+								) : patients.length > 0 ? (
+									patients.map((patient) => (
+										<TableRow key={patient.id}>
+											<TableCell className="font-medium">
+												{patient.name}
+											</TableCell>
+											<TableCell>{patient.email}</TableCell>
+											<TableCell className="text-right">
+												<Button
+													variant="outline"
+													size="sm"
+													onClick={() => handleCreateRecordClick(patient.id)}
+												>
+													Create Medical Record
+												</Button>
+											</TableCell>
+										</TableRow>
+									))
+								) : (
+									<TableRow>
+										<TableCell colSpan={3} className="text-center">
+											You have no assigned patients.
+										</TableCell>
+									</TableRow>
+								)}
+							</TableBody>
+						</Table>
+					</div>
 				</CardContent>
 			</Card>
 			{isModalOpen && selectedPatientId && (
@@ -146,6 +203,6 @@ export default function PatientsPage() {
 					onRecordCreated={handleRecordCreated}
 				/>
 			)}
-		</>
+		</div>
 	)
 }

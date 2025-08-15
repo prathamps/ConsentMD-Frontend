@@ -17,21 +17,19 @@ interface FeaturesSectionProps {
 
 const features: FeatureItem[] = [
 	{
-		title: "Secure & HIPAA Compliant",
-		description:
-			"End-to-end encryption ensures your health data stays private and secure.",
+		title: "Secure Data",
+		description: "Your health information is encrypted and stored securely.",
 		icon: Shield,
 	},
 	{
-		title: "24/7 Availability",
+		title: "Quick Access",
 		description:
-			"Access healthcare professionals anytime, anywhere with flexible scheduling.",
+			"Find and manage patient records, appointments, and forms easily.",
 		icon: Clock,
 	},
 	{
-		title: "Easy Connection",
-		description:
-			"Connect patients and providers seamlessly with our intuitive platform.",
+		title: "Simple Interface",
+		description: "Clean, intuitive design that's easy for everyone to use.",
 		icon: Users,
 	},
 ]
@@ -43,16 +41,15 @@ export function FeaturesSection({ className }: FeaturesSectionProps) {
 				{/* Section Header */}
 				<div className="text-center mb-16">
 					<h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl mb-4">
-						Why Choose Our Platform
+						Key Features
 					</h2>
 					<p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-						Experience the future of healthcare with our secure, efficient, and
-						user-friendly telemedicine platform.
+						Everything you need to manage healthcare records and consultations.
 					</p>
 				</div>
 
 				{/* Features Grid */}
-				<div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+				<div className="grid md:grid-cols-3 gap-6">
 					{features.map((feature, index) => {
 						const IconComponent = feature.icon
 						return (

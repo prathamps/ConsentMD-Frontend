@@ -27,10 +27,10 @@ interface FinalCTASectionProps {
 }
 
 export function FinalCTASection({
-	headline = "Ready to Streamline Your Consent Process?",
-	description = "Streamline your healthcare consent management process with our secure, efficient digital platform. Start your journey today.",
+	headline = "Ready to Get Started?",
+	description = "Join healthcare professionals who trust our platform for managing patient records and consultations.",
 	primaryCTA = {
-		text: "Get Started Now",
+		text: "Create Account",
 		href: "/register",
 		variant: "default",
 	},

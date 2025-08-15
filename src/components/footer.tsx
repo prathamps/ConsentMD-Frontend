@@ -24,8 +24,7 @@ export function Footer({ className }: FooterProps) {
 							<span className="text-xl font-bold">ConsentMD</span>
 						</div>
 						<p className="text-muted-foreground text-sm leading-relaxed">
-							Streamlining healthcare consent management with secure, efficient
-							digital solutions for medical professionals and patients.
+							Simple healthcare management platform for medical professionals.
 						</p>
 					</div>
 

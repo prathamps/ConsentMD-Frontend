@@ -86,73 +86,136 @@ export default function AccessibleRecordsPage() {
 	}
 
 	return (
-		<>
-			<Card>
+		<div className="space-y-4 sm:space-y-6">
+			{/* Mobile Card View */}
+			<div className="block sm:hidden space-y-4">
+				<h1 className="text-xl font-bold">Accessible Medical Records</h1>
+				{isLoading ? (
+					Array.from({ length: 3 }).map((_, i) => (
+						<Card key={i}>
+							<CardContent className="p-4">
+								<div className="space-y-3">
+									<Skeleton className="h-4 w-3/4" />
+									<Skeleton className="h-4 w-1/2" />
+									<Skeleton className="h-4 w-1/3" />
+									<Skeleton className="h-10 w-full" />
+								</div>
+							</CardContent>
+						</Card>
+					))
+				) : error ? (
+					<Card>
+						<CardContent className="p-4 text-center text-red-500">
+							{error}
+						</CardContent>
+					</Card>
+				) : records.length > 0 ? (
+					records.map((item) => (
+						<Card key={item.key}>
+							<CardContent className="p-4">
+								<div className="space-y-3">
+									<div>
+										<p className="font-medium truncate">
+											{getEmailFromPatientId(item.record.patientId)}
+										</p>
+										<p className="text-sm text-muted-foreground line-clamp-2">
+											{item.record.details}
+										</p>
+										<p className="text-xs text-muted-foreground">
+											{new Date(item.record.createdAt).toLocaleDateString()}
+										</p>
+									</div>
+									<Button
+										variant="outline"
+										onClick={() => openDocument(item.record.recordId)}
+										className="w-full"
+									>
+										View Document
+									</Button>
+								</div>
+							</CardContent>
+						</Card>
+					))
+				) : (
+					<Card>
+						<CardContent className="p-4 text-center">
+							No records have been shared with you.
+						</CardContent>
+					</Card>
+				)}
+			</div>
+
+			{/* Desktop Table View */}
+			<Card className="hidden sm:block">
 				<CardHeader>
 					<CardTitle>Accessible Medical Records</CardTitle>
 				</CardHeader>
 				<CardContent>
-					<Table>
-						<TableHeader>
-							<TableRow>
-								<TableHead>Patient</TableHead>
-								<TableHead>Details</TableHead>
-								<TableHead>Created At</TableHead>
-								<TableHead className="text-right">Actions</TableHead>
-							</TableRow>
-						</TableHeader>
-						<TableBody>
-							{isLoading ? (
+					<div className="overflow-x-auto">
+						<Table>
+							<TableHeader>
 								<TableRow>
-									<TableCell>
-										<Skeleton className="h-4 w-[200px]" />
-									</TableCell>
-									<TableCell>
-										<Skeleton className="h-4 w-[200px]" />
-									</TableCell>
-									<TableCell>
-										<Skeleton className="h-4 w-[150px]" />
-									</TableCell>
-									<TableCell className="text-right">
-										<Skeleton className="h-8 w-[70px]" />
-									</TableCell>
+									<TableHead>Patient</TableHead>
+									<TableHead>Details</TableHead>
+									<TableHead>Created At</TableHead>
+									<TableHead className="text-right">Actions</TableHead>
 								</TableRow>
-							) : error ? (
-								<TableRow>
-									<TableCell colSpan={4} className="text-center text-red-500">
-										{error}
-									</TableCell>
-								</TableRow>
-							) : records.length > 0 ? (
-								records.map((item) => (
-									<TableRow key={item.key}>
+							</TableHeader>
+							<TableBody>
+								{isLoading ? (
+									<TableRow>
 										<TableCell>
-											{getEmailFromPatientId(item.record.patientId)}
+											<Skeleton className="h-4 w-[200px]" />
 										</TableCell>
-										<TableCell>{item.record.details}</TableCell>
 										<TableCell>
-											{new Date(item.record.createdAt).toLocaleDateString()}
+											<Skeleton className="h-4 w-[200px]" />
+										</TableCell>
+										<TableCell>
+											<Skeleton className="h-4 w-[150px]" />
 										</TableCell>
 										<TableCell className="text-right">
-											<Button
-												variant="outline"
-												size="sm"
-												onClick={() => openDocument(item.record.recordId)}
-											>
-												View
-											</Button>
+											<Skeleton className="h-8 w-[70px]" />
 										</TableCell>
 									</TableRow>
-								))
-							) : (
-								<TableRow>
-									<TableCell colSpan={4} className="text-center">
-										No records have been shared with you.
-									</TableCell>
-								</TableRow>
-							)}
-						</TableBody>
-					</Table>
+								) : error ? (
+									<TableRow>
+										<TableCell colSpan={4} className="text-center text-red-500">
+											{error}
+										</TableCell>
+									</TableRow>
+								) : records.length > 0 ? (
+									records.map((item) => (
+										<TableRow key={item.key}>
+											<TableCell className="font-medium">
+												{getEmailFromPatientId(item.record.patientId)}
+											</TableCell>
+											<TableCell className="max-w-xs truncate">
+												{item.record.details}
+											</TableCell>
+											<TableCell>
+												{new Date(item.record.createdAt).toLocaleDateString()}
+											</TableCell>
+											<TableCell className="text-right">
+												<Button
+													variant="outline"
+													size="sm"
+													onClick={() => openDocument(item.record.recordId)}
+												>
+													View
+												</Button>
+											</TableCell>
+										</TableRow>
+									))
+								) : (
+									<TableRow>
+										<TableCell colSpan={4} className="text-center">
+											No records have been shared with you.
+										</TableCell>
+									</TableRow>
+								)}
+							</TableBody>
+						</Table>
+					</div>
 				</CardContent>
 			</Card>
 			{isPdfViewerOpen && pdfUrl && (
@@ -162,6 +225,6 @@ export default function AccessibleRecordsPage() {
 					isOpen={isPdfViewerOpen}
 				/>
 			)}
-		</>
+		</div>
 	)
 }

@@ -229,19 +229,20 @@ export default function MyRecordsPage() {
 	}
 
 	return (
-		<div className="space-y-6">
-			<div className="flex items-center justify-between">
+		<div className="space-y-4 sm:space-y-6">
+			<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
 				<div className="space-y-1">
-					<h1 className="text-2xl font-bold">My Medical Records</h1>
-					<p className="text-muted-foreground">
+					<h1 className="text-xl sm:text-2xl font-bold">My Medical Records</h1>
+					<p className="text-sm sm:text-base text-muted-foreground">
 						Here you can manage your uploaded medical records.
 					</p>
 				</div>
 				<Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
 					<DialogTrigger asChild>
-						<Button>
+						<Button className="w-full sm:w-auto">
 							<PlusCircle className="mr-2 h-4 w-4" />
-							Create New Record
+							<span className="hidden sm:inline">Create New Record</span>
+							<span className="sm:hidden">New Record</span>
 						</Button>
 					</DialogTrigger>
 					<DialogContent>
@@ -278,7 +279,7 @@ export default function MyRecordsPage() {
 
 			{error && <p className="text-red-500">{error}</p>}
 
-			<div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+			<div className="grid gap-4 sm:gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
 				{isLoading
 					? Array.from({ length: 3 }).map((_, i) => (
 							<Card key={i}>
@@ -289,42 +290,51 @@ export default function MyRecordsPage() {
 								<CardContent>
 									<Skeleton className="h-10 w-full" />
 								</CardContent>
-								<CardFooter className="flex justify-between">
-									<Skeleton className="h-10 w-24" />
-									<Skeleton className="h-10 w-24" />
+								<CardFooter className="flex flex-col sm:flex-row gap-2 sm:justify-between">
+									<Skeleton className="h-10 w-full sm:w-24" />
+									<Skeleton className="h-10 w-full sm:w-24" />
 								</CardFooter>
 							</Card>
 					  ))
 					: records.map(({ key, record }) => (
 							<Card key={key}>
 								<CardHeader>
-									<CardTitle className="truncate">{record.docType}</CardTitle>
-									<CardDescription>
+									<CardTitle className="truncate text-base sm:text-lg">
+										{record.docType}
+									</CardTitle>
+									<CardDescription className="text-xs sm:text-sm">
 										Created: {new Date(record.createdAt).toLocaleDateString()}
 									</CardDescription>
 								</CardHeader>
 								<CardContent>
-									<p className="line-clamp-2 text-sm text-muted-foreground">
+									<p className="line-clamp-2 text-xs sm:text-sm text-muted-foreground">
 										{record.details}
 									</p>
 								</CardContent>
-								<CardFooter className="flex justify-between">
+								<CardFooter className="flex flex-col sm:flex-row gap-2 sm:justify-between">
 									<Button
 										variant="outline"
 										onClick={() => openViewModal(record)}
+										className="w-full sm:w-auto text-xs sm:text-sm"
 									>
 										View Details
 									</Button>
-									<Button onClick={() => openConsentModal(record)}>
-										<Share2 className="mr-2 h-4 w-4" />
-										Grant Consent
+									<Button
+										onClick={() => openConsentModal(record)}
+										className="w-full sm:w-auto text-xs sm:text-sm"
+									>
+										<Share2 className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+										<span className="hidden sm:inline">Grant Consent</span>
+										<span className="sm:hidden">Grant</span>
 									</Button>
 								</CardFooter>
 							</Card>
 					  ))}
 				{!isLoading && records.length === 0 && (
-					<div className="col-span-full text-center">
-						<p>No medical records found. Start by creating one!</p>
+					<div className="col-span-full text-center py-8">
+						<p className="text-sm sm:text-base text-muted-foreground">
+							No medical records found. Start by creating one!
+						</p>
 					</div>
 				)}
 			</div>

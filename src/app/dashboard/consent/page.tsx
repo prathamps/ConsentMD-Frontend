@@ -166,88 +166,171 @@ export default function ConsentPage() {
 	}
 
 	return (
-		<div className="space-y-8">
-			<Card>
+		<div className="space-y-4 sm:space-y-6">
+			{/* Mobile Card View */}
+			<div className="block sm:hidden space-y-4">
+				<h1 className="text-xl font-bold">My Active Consents</h1>
+				{isLoading ? (
+					Array.from({ length: 3 }).map((_, i) => (
+						<Card key={i}>
+							<CardContent className="p-4">
+								<div className="space-y-3">
+									<Skeleton className="h-4 w-3/4" />
+									<Skeleton className="h-4 w-1/2" />
+									<Skeleton className="h-4 w-2/3" />
+									<div className="flex justify-between items-center">
+										<Skeleton className="h-4 w-1/3" />
+										<Skeleton className="h-8 w-8 rounded-full" />
+									</div>
+								</div>
+							</CardContent>
+						</Card>
+					))
+				) : error ? (
+					<Card>
+						<CardContent className="p-4 text-center text-red-500">
+							{error}
+						</CardContent>
+					</Card>
+				) : consents.length > 0 ? (
+					consents.map((item) => {
+						const medicalRecord = recordMap.get(item.record.recordId)
+						return (
+							<Card key={item.key}>
+								<CardContent className="p-4">
+									<div className="space-y-3">
+										<div>
+											<p className="font-medium">
+												{medicalRecord?.docType || "..."}
+											</p>
+											<p className="text-sm text-muted-foreground line-clamp-2">
+												{getDetailsSnippet(medicalRecord?.details)}
+											</p>
+										</div>
+										<div className="text-sm">
+											<p>
+												<span className="font-medium">Doctor:</span>{" "}
+												{doctorMap.get(item.record.doctorId) ||
+													"Unknown Doctor"}
+											</p>
+											<p>
+												<span className="font-medium">Granted:</span>{" "}
+												{new Date(item.record.grantedAt).toLocaleDateString()}
+											</p>
+										</div>
+										<div className="flex justify-end">
+											<Button
+												variant="ghost"
+												size="sm"
+												onClick={() =>
+													handleRevokeConsent(item.record.consentId)
+												}
+												className="text-destructive hover:text-destructive"
+											>
+												<Trash2 className="h-4 w-4 mr-2" />
+												Revoke
+											</Button>
+										</div>
+									</div>
+								</CardContent>
+							</Card>
+						)
+					})
+				) : (
+					<Card>
+						<CardContent className="p-4 text-center">
+							You have not granted any consents.
+						</CardContent>
+					</Card>
+				)}
+			</div>
+
+			{/* Desktop Table View */}
+			<Card className="hidden sm:block">
 				<CardHeader>
 					<CardTitle>My Active Consents</CardTitle>
 				</CardHeader>
 				<CardContent>
-					<Table>
-						<TableHeader>
-							<TableRow>
-								<TableHead>Document Type</TableHead>
-								<TableHead>Details</TableHead>
-								<TableHead>Doctor Name</TableHead>
-								<TableHead>Date Granted</TableHead>
-								<TableHead className="text-right">Revoke</TableHead>
-							</TableRow>
-						</TableHeader>
-						<TableBody>
-							{isLoading ? (
-								[...Array(3)].map((_, i) => (
-									<TableRow key={i}>
-										<TableCell>
-											<Skeleton className="h-4 w-full" />
-										</TableCell>
-										<TableCell>
-											<Skeleton className="h-4 w-full" />
-										</TableCell>
-										<TableCell>
-											<Skeleton className="h-4 w-2/3" />
-										</TableCell>
-										<TableCell>
-											<Skeleton className="h-4 w-1/2" />
-										</TableCell>
-										<TableCell className="text-right">
-											<Skeleton className="h-8 w-8 rounded-full" />
-										</TableCell>
-									</TableRow>
-								))
-							) : error ? (
+					<div className="overflow-x-auto">
+						<Table>
+							<TableHeader>
 								<TableRow>
-									<TableCell colSpan={5} className="text-center text-red-500">
-										{error}
-									</TableCell>
+									<TableHead>Document Type</TableHead>
+									<TableHead>Details</TableHead>
+									<TableHead>Doctor Name</TableHead>
+									<TableHead>Date Granted</TableHead>
+									<TableHead className="text-right">Revoke</TableHead>
 								</TableRow>
-							) : consents.length > 0 ? (
-								consents.map((item) => {
-									const medicalRecord = recordMap.get(item.record.recordId)
-									return (
-										<TableRow key={item.key}>
-											<TableCell>{medicalRecord?.docType || "..."}</TableCell>
+							</TableHeader>
+							<TableBody>
+								{isLoading ? (
+									[...Array(3)].map((_, i) => (
+										<TableRow key={i}>
 											<TableCell>
-												{getDetailsSnippet(medicalRecord?.details)}
+												<Skeleton className="h-4 w-full" />
 											</TableCell>
 											<TableCell>
-												{doctorMap.get(item.record.doctorId) ||
-													"Unknown Doctor"}
+												<Skeleton className="h-4 w-full" />
 											</TableCell>
 											<TableCell>
-												{new Date(item.record.grantedAt).toLocaleDateString()}
+												<Skeleton className="h-4 w-2/3" />
+											</TableCell>
+											<TableCell>
+												<Skeleton className="h-4 w-1/2" />
 											</TableCell>
 											<TableCell className="text-right">
-												<Button
-													variant="ghost"
-													size="icon"
-													onClick={() =>
-														handleRevokeConsent(item.record.consentId)
-													}
-												>
-													<Trash2 className="h-4 w-4" />
-												</Button>
+												<Skeleton className="h-8 w-8 rounded-full" />
 											</TableCell>
 										</TableRow>
-									)
-								})
-							) : (
-								<TableRow>
-									<TableCell colSpan={5} className="text-center">
-										You have not granted any consents.
-									</TableCell>
-								</TableRow>
-							)}
-						</TableBody>
-					</Table>
+									))
+								) : error ? (
+									<TableRow>
+										<TableCell colSpan={5} className="text-center text-red-500">
+											{error}
+										</TableCell>
+									</TableRow>
+								) : consents.length > 0 ? (
+									consents.map((item) => {
+										const medicalRecord = recordMap.get(item.record.recordId)
+										return (
+											<TableRow key={item.key}>
+												<TableCell className="font-medium">
+													{medicalRecord?.docType || "..."}
+												</TableCell>
+												<TableCell className="max-w-xs truncate">
+													{getDetailsSnippet(medicalRecord?.details)}
+												</TableCell>
+												<TableCell>
+													{doctorMap.get(item.record.doctorId) ||
+														"Unknown Doctor"}
+												</TableCell>
+												<TableCell>
+													{new Date(item.record.grantedAt).toLocaleDateString()}
+												</TableCell>
+												<TableCell className="text-right">
+													<Button
+														variant="ghost"
+														size="icon"
+														onClick={() =>
+															handleRevokeConsent(item.record.consentId)
+														}
+													>
+														<Trash2 className="h-4 w-4" />
+													</Button>
+												</TableCell>
+											</TableRow>
+										)
+									})
+								) : (
+									<TableRow>
+										<TableCell colSpan={5} className="text-center">
+											You have not granted any consents.
+										</TableCell>
+									</TableRow>
+								)}
+							</TableBody>
+						</Table>
+					</div>
 				</CardContent>
 			</Card>
 		</div>

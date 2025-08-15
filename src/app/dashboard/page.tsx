@@ -115,14 +115,14 @@ export default function DashboardPage() {
 
 	const renderPatientDashboard = () => (
 		<>
-			<div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+			<div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
 				<Card>
 					<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
 						<CardTitle className="text-sm font-medium">Total Records</CardTitle>
 						<FileText className="h-4 w-4 text-muted-foreground" />
 					</CardHeader>
 					<CardContent>
-						<div className="text-2xl font-bold">{stats.records}</div>
+						<div className="text-xl sm:text-2xl font-bold">{stats.records}</div>
 					</CardContent>
 				</Card>
 				<Card>
@@ -133,7 +133,9 @@ export default function DashboardPage() {
 						<FileKey className="h-4 w-4 text-muted-foreground" />
 					</CardHeader>
 					<CardContent>
-						<div className="text-2xl font-bold">{stats.consents}</div>
+						<div className="text-xl sm:text-2xl font-bold">
+							{stats.consents}
+						</div>
 					</CardContent>
 				</Card>
 				<Card>
@@ -144,22 +146,28 @@ export default function DashboardPage() {
 						<Users className="h-4 w-4 text-muted-foreground" />
 					</CardHeader>
 					<CardContent>
-						<div className="text-2xl font-bold">{stats.consultations}</div>
+						<div className="text-xl sm:text-2xl font-bold">
+							{stats.consultations}
+						</div>
 					</CardContent>
 				</Card>
 			</div>
 
-			<div className="space-y-4">
-				<h2 className="text-xl font-semibold">Quick Actions</h2>
-				<div className="flex space-x-4">
-					<Button asChild>
+			<div className="space-y-3 sm:space-y-4">
+				<h2 className="text-lg sm:text-xl font-semibold">Quick Actions</h2>
+				<div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+					<Button asChild className="w-full sm:w-auto">
 						<Link href="/dashboard/records">
-							<FileText className="mr-2 h-4 w-4" /> Manage My Records
+							<FileText className="mr-2 h-4 w-4" />
+							<span className="hidden sm:inline">Manage My Records</span>
+							<span className="sm:hidden">My Records</span>
 						</Link>
 					</Button>
-					<Button asChild variant="secondary">
+					<Button asChild variant="secondary" className="w-full sm:w-auto">
 						<Link href="/dashboard/doctors">
-							<Stethoscope className="mr-2 h-4 w-4" /> Find a Doctor
+							<Stethoscope className="mr-2 h-4 w-4" />
+							<span className="hidden sm:inline">Find a Doctor</span>
+							<span className="sm:hidden">Find Doctor</span>
 						</Link>
 					</Button>
 				</div>
@@ -169,7 +177,7 @@ export default function DashboardPage() {
 
 	const renderDoctorDashboard = () => (
 		<>
-			<div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+			<div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
 				<Card>
 					<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
 						<CardTitle className="text-sm font-medium">
@@ -178,7 +186,9 @@ export default function DashboardPage() {
 						<Bell className="h-4 w-4 text-muted-foreground" />
 					</CardHeader>
 					<CardContent>
-						<div className="text-2xl font-bold">{stats.requests}</div>
+						<div className="text-xl sm:text-2xl font-bold">
+							{stats.requests}
+						</div>
 					</CardContent>
 				</Card>
 				<Card>
@@ -189,7 +199,9 @@ export default function DashboardPage() {
 						<Users className="h-4 w-4 text-muted-foreground" />
 					</CardHeader>
 					<CardContent>
-						<div className="text-2xl font-bold">{stats.patients}</div>
+						<div className="text-xl sm:text-2xl font-bold">
+							{stats.patients}
+						</div>
 					</CardContent>
 				</Card>
 				<Card>
@@ -200,22 +212,28 @@ export default function DashboardPage() {
 						<FileKey className="h-4 w-4 text-muted-foreground" />
 					</CardHeader>
 					<CardContent>
-						<div className="text-2xl font-bold">{stats.accessibleRecords}</div>
+						<div className="text-xl sm:text-2xl font-bold">
+							{stats.accessibleRecords}
+						</div>
 					</CardContent>
 				</Card>
 			</div>
 
-			<div className="space-y-4">
-				<h2 className="text-xl font-semibold">Quick Actions</h2>
-				<div className="flex space-x-4">
-					<Button asChild>
+			<div className="space-y-3 sm:space-y-4">
+				<h2 className="text-lg sm:text-xl font-semibold">Quick Actions</h2>
+				<div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+					<Button asChild className="w-full sm:w-auto">
 						<Link href="/dashboard/requests">
-							<Bell className="mr-2 h-4 w-4" /> View Requests
+							<Bell className="mr-2 h-4 w-4" />
+							<span className="hidden sm:inline">View Requests</span>
+							<span className="sm:hidden">Requests</span>
 						</Link>
 					</Button>
-					<Button asChild variant="secondary">
+					<Button asChild variant="secondary" className="w-full sm:w-auto">
 						<Link href="/dashboard/patients">
-							<Users className="mr-2 h-4 w-4" /> Manage Patients
+							<Users className="mr-2 h-4 w-4" />
+							<span className="hidden sm:inline">Manage Patients</span>
+							<span className="sm:hidden">Patients</span>
 						</Link>
 					</Button>
 				</div>
@@ -224,16 +242,18 @@ export default function DashboardPage() {
 	)
 
 	return (
-		<div className="space-y-6">
+		<div className="space-y-4 sm:space-y-6">
 			<div>
-				<h1 className="text-2xl font-bold">Welcome, {user?.name || "User"}!</h1>
-				<p className="text-muted-foreground">
+				<h1 className="text-xl sm:text-2xl font-bold truncate">
+					Welcome, {user?.name || "User"}!
+				</h1>
+				<p className="text-sm sm:text-base text-muted-foreground">
 					Here&apos;s a summary of your activities.
 				</p>
 			</div>
 
 			{isLoading && (
-				<div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+				<div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
 					{[...Array(3)].map((_, i) => (
 						<Card key={i}>
 							<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">

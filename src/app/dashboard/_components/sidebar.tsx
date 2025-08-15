@@ -83,26 +83,30 @@ export default function Sidebar() {
 
 	return (
 		<div className="flex h-full max-h-screen flex-col gap-2">
-			<div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
+			<div className="flex h-14 items-center border-b px-3 sm:px-4 lg:h-[60px] lg:px-6">
 				<Link href="/" className="flex items-center gap-2 font-semibold">
-					<HeartPulse className="h-6 w-6" />
-					<span className="">Telemedicine</span>
+					<HeartPulse className="h-5 w-5 sm:h-6 sm:w-6" />
+					<span className="text-sm sm:text-base">Telemedicine</span>
 				</Link>
-				<Button variant="outline" size="icon" className="ml-auto h-8 w-8">
-					<Bell className="h-4 w-4" />
+				<Button
+					variant="outline"
+					size="icon"
+					className="ml-auto h-7 w-7 sm:h-8 sm:w-8"
+				>
+					<Bell className="h-3 w-3 sm:h-4 sm:w-4" />
 					<span className="sr-only">Toggle notifications</span>
 				</Button>
 			</div>
-			<div className="flex-1">
-				<nav className="grid items-start px-2 text-sm font-medium lg:px-4">
+			<div className="flex-1 overflow-y-auto">
+				<nav className="grid items-start px-2 text-sm font-medium lg:px-4 space-y-1">
 					{navLinks.map((link) => (
 						<Link
 							key={link.text}
 							href={link.href}
-							className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
+							className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-muted-foreground transition-all hover:text-primary hover:bg-muted/50 active:bg-muted"
 						>
-							<link.icon className="h-4 w-4" />
-							{link.text}
+							<link.icon className="h-4 w-4 flex-shrink-0" />
+							<span className="truncate">{link.text}</span>
 						</Link>
 					))}
 				</nav>
