@@ -279,10 +279,10 @@ export default function MyRecordsPage() {
 
 			{error && <p className="text-red-500">{error}</p>}
 
-			<div className="grid gap-4 sm:gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+			<div className="grid gap-4 sm:gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 justify-items-center">
 				{isLoading
 					? Array.from({ length: 3 }).map((_, i) => (
-							<Card key={i}>
+							<Card key={i} className="w-full max-w-sm">
 								<CardHeader>
 									<Skeleton className="h-6 w-3/4" />
 									<Skeleton className="mt-2 h-4 w-1/2" />
@@ -297,7 +297,7 @@ export default function MyRecordsPage() {
 							</Card>
 					  ))
 					: records.map(({ key, record }) => (
-							<Card key={key}>
+							<Card key={key} className="w-full max-w-sm">
 								<CardHeader>
 									<CardTitle className="truncate text-base sm:text-lg">
 										{record.docType}
@@ -341,62 +341,98 @@ export default function MyRecordsPage() {
 
 			{/* View Details Modal */}
 			<Dialog open={isViewModalOpen} onOpenChange={setIsViewModalOpen}>
-				<DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-					<DialogHeader>
-						<DialogTitle>Record Details</DialogTitle>
+				<DialogContent className="max-w-[95vw] sm:max-w-2xl md:max-w-3xl lg:max-w-4xl max-h-[90vh] flex flex-col ml-0 sm:ml-auto">
+					<DialogHeader className="flex-shrink-0">
+						<DialogTitle className="text-lg sm:text-xl">
+							Record Details
+						</DialogTitle>
 					</DialogHeader>
 					{selectedRecord && (
-						<div className="space-y-4 pt-4">
+						<div className="flex-1 overflow-y-auto space-y-3 sm:space-y-4 pt-2 sm:pt-4">
 							<div className="space-y-2">
-								<p className="font-semibold">Record ID</p>
-								<div className="rounded-md bg-muted p-3 text-sm text-muted-foreground">
-									<p className="font-mono text-xs break-words overflow-wrap-anywhere">
+								<p className="font-semibold text-sm sm:text-base">Record ID</p>
+								<div className="rounded-md bg-muted p-2 sm:p-3 text-xs sm:text-sm text-muted-foreground">
+									<p className="font-mono break-words overflow-wrap-anywhere">
 										{selectedRecord.recordId}
 									</p>
 								</div>
 							</div>
 							<div className="space-y-2">
-								<p className="font-semibold">Patient Email</p>
-								<div className="rounded-md bg-muted p-3 text-sm text-muted-foreground">
+								<p className="font-semibold text-sm sm:text-base">
+									Patient Email
+								</p>
+								<div className="rounded-md bg-muted p-2 sm:p-3 text-xs sm:text-sm text-muted-foreground">
 									<p className="break-words">
 										{getEmailFromPatientId(selectedRecord.patientId)}
 									</p>
 								</div>
 							</div>
 							<div className="space-y-2">
-								<p className="font-semibold">Details</p>
-								<div className="rounded-md bg-muted p-3 text-sm text-muted-foreground max-h-32 overflow-y-auto">
-									<p className="whitespace-pre-wrap break-words">
-										{selectedRecord.details}
-									</p>
+								<p className="font-semibold text-sm sm:text-base">Details</p>
+								<div className="rounded-md bg-muted p-2 sm:p-3 text-xs sm:text-sm text-muted-foreground">
+									{(() => {
+										try {
+											const parsedDetails = JSON.parse(selectedRecord.details)
+											return (
+												<div className="space-y-2 sm:space-y-3">
+													{Object.entries(parsedDetails).map(([key, value]) => (
+														<div key={key} className="space-y-1">
+															<p className="font-medium text-foreground capitalize text-xs sm:text-sm">
+																{key.replace(/([A-Z])/g, " $1").trim()}:
+															</p>
+															<div className="pl-2 sm:pl-3 border-l-2 border-border">
+																{typeof value === "object" && value !== null ? (
+																	<pre className="whitespace-pre-wrap text-xs font-mono bg-background p-1.5 sm:p-2 rounded border overflow-x-auto">
+																		{JSON.stringify(value, null, 2)}
+																	</pre>
+																) : (
+																	<p className="whitespace-pre-wrap break-words text-xs sm:text-sm">
+																		{String(value)}
+																	</p>
+																)}
+															</div>
+														</div>
+													))}
+												</div>
+											)
+										} catch {
+											return (
+												<p className="whitespace-pre-wrap break-words text-xs sm:text-sm">
+													{selectedRecord.details}
+												</p>
+											)
+										}
+									})()}
 								</div>
 							</div>
 							<div className="space-y-2">
-								<p className="font-semibold">Created At</p>
-								<div className="rounded-md bg-muted p-3 text-sm text-muted-foreground">
+								<p className="font-semibold text-sm sm:text-base">Created At</p>
+								<div className="rounded-md bg-muted p-2 sm:p-3 text-xs sm:text-sm text-muted-foreground">
 									<p className="break-words">
 										{new Date(selectedRecord.createdAt).toLocaleString()}
 									</p>
 								</div>
 							</div>
-							<DialogFooter className="!mt-6 flex flex-col sm:flex-row justify-end gap-2">
-								<Button
-									variant="secondary"
-									onClick={() => openDocument(selectedRecord.recordId)}
-									className="w-full sm:w-auto"
-								>
-									View Document
-								</Button>
-								<Button
-									variant="outline"
-									onClick={() => setIsViewModalOpen(false)}
-									className="w-full sm:w-auto"
-								>
-									Close
-								</Button>
-							</DialogFooter>
 						</div>
 					)}
+					<DialogFooter className="flex-shrink-0 !mt-4 sm:!mt-6 flex flex-col sm:flex-row justify-end gap-2">
+						<Button
+							variant="secondary"
+							onClick={() =>
+								selectedRecord && openDocument(selectedRecord.recordId)
+							}
+							className="w-full sm:w-auto text-xs sm:text-sm"
+						>
+							View Document
+						</Button>
+						<Button
+							variant="outline"
+							onClick={() => setIsViewModalOpen(false)}
+							className="w-full sm:w-auto text-xs sm:text-sm"
+						>
+							Close
+						</Button>
+					</DialogFooter>
 				</DialogContent>
 			</Dialog>
 

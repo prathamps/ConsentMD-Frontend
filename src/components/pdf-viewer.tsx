@@ -52,11 +52,14 @@ export function PDFViewer({ isOpen, onClose, fileUrl }: PDFViewerProps) {
 
 	return (
 		<Dialog open={isOpen} onOpenChange={handleClose}>
-			<DialogContent className="max-w-4xl h-[90vh] flex flex-col">
+			<DialogContent className="max-w-[95vw] sm:max-w-2xl md:max-w-3xl lg:max-w-4xl h-[90vh] flex flex-col ml-0 sm:ml-auto">
 				<DialogHeader>
 					<DialogTitle>Document Viewer</DialogTitle>
 				</DialogHeader>
-				<div onContextMenu={(e) => e.preventDefault()} className="flex-grow overflow-auto flex items-center justify-center bg-gray-100 dark:bg-gray-900 p-4">
+				<div
+					onContextMenu={(e) => e.preventDefault()}
+					className="flex-grow overflow-auto flex items-center justify-center bg-gray-100 dark:bg-gray-900 p-4"
+				>
 					{fileUrl ? (
 						<Document
 							file={fileUrl}

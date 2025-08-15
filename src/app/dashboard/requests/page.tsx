@@ -3,6 +3,8 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useAppDispatch } from "@/store/hooks"
+import { decrementRequests } from "@/store/dashboardSlice"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
@@ -16,6 +18,7 @@ import {
 import api from "@/services/api"
 import axios from "axios"
 import { Skeleton } from "@/components/ui/skeleton"
+import { toast } from "sonner"
 import CreateRecordModal from "../patients/_components/CreateRecordModal"
 
 type ConsultationRequest = {
@@ -29,6 +32,7 @@ type ConsultationRequest = {
 }
 
 export default function RequestsPage() {
+	const dispatch = useAppDispatch()
 	const [requests, setRequests] = useState<ConsultationRequest[]>([])
 	const [isLoading, setIsLoading] = useState(true)
 	const [error, setError] = useState<string | null>(null)
@@ -43,9 +47,12 @@ export default function RequestsPage() {
 			const response = await api.get("/consultations/requests")
 			const allRequests: ConsultationRequest[] = response.data.payload || []
 
-			// De-duplicate requests based on their ID to prevent key errors
+			// Filter for only pending requests and de-duplicate based on ID
+			const pendingRequests = allRequests.filter(
+				(req) => req.status === "pending"
+			)
 			const uniqueRequests = Array.from(
-				new Map(allRequests.map((req) => [req.id, req])).values()
+				new Map(pendingRequests.map((req) => [req.id, req])).values()
 			)
 
 			setRequests(uniqueRequests)
@@ -71,9 +78,22 @@ export default function RequestsPage() {
 	) => {
 		try {
 			await api.patch(`/consultations/${id}`, { status })
-			fetchRequests() // Refresh list
+
+			// Update the dashboard counter immediately (pending requests decrease)
+			dispatch(decrementRequests())
+
+			// Show success message
+			if (status === "approved") {
+				toast.success("Consultation request approved successfully!")
+			} else {
+				toast.success("Consultation request rejected successfully!")
+			}
+
+			// Refresh the list (the approved/rejected request will no longer appear)
+			fetchRequests()
 		} catch (err) {
 			console.error(`Failed to ${status} consultation`, err)
+			toast.error("Failed to update consultation request.")
 			setError("Failed to update consultation request.")
 		}
 	}
@@ -98,7 +118,7 @@ export default function RequestsPage() {
 		<div className="space-y-4 sm:space-y-6">
 			{/* Mobile Card View */}
 			<div className="block sm:hidden space-y-4">
-				<h1 className="text-xl font-bold">Consultation Requests</h1>
+				<h1 className="text-xl font-bold">Pending Consultation Requests</h1>
 				{isLoading ? (
 					Array.from({ length: 3 }).map((_, i) => (
 						<Card key={i}>
@@ -127,47 +147,27 @@ export default function RequestsPage() {
 								<div className="space-y-3">
 									<div>
 										<p className="font-medium">{req.patient?.name || "N/A"}</p>
-										<p className="text-sm text-muted-foreground capitalize">
-											{req.status}
+										<p className="text-sm text-muted-foreground">
+											Pending approval
 										</p>
 									</div>
 									<div className="flex gap-2">
-										{req.status === "pending" && (
-											<>
-												<Button
-													variant="outline"
-													size="sm"
-													onClick={() =>
-														handleUpdateRequest(req.id, "approved")
-													}
-													className="flex-1"
-												>
-													Approve
-												</Button>
-												<Button
-													variant="destructive"
-													size="sm"
-													onClick={() =>
-														handleUpdateRequest(req.id, "rejected")
-													}
-													className="flex-1"
-												>
-													Reject
-												</Button>
-											</>
-										)}
-										{req.status === "approved" && (
-											<Button
-												variant="default"
-												size="sm"
-												onClick={() =>
-													handleCreateRecord(req.patient.blockchainId)
-												}
-												className="w-full"
-											>
-												Create Record
-											</Button>
-										)}
+										<Button
+											variant="outline"
+											size="sm"
+											onClick={() => handleUpdateRequest(req.id, "approved")}
+											className="flex-1"
+										>
+											Approve
+										</Button>
+										<Button
+											variant="destructive"
+											size="sm"
+											onClick={() => handleUpdateRequest(req.id, "rejected")}
+											className="flex-1"
+										>
+											Reject
+										</Button>
 									</div>
 								</div>
 							</CardContent>
@@ -176,7 +176,7 @@ export default function RequestsPage() {
 				) : (
 					<Card>
 						<CardContent className="p-4 text-center">
-							No consultation requests found.
+							No pending consultation requests found.
 						</CardContent>
 					</Card>
 				)}
@@ -185,7 +185,7 @@ export default function RequestsPage() {
 			{/* Desktop Table View */}
 			<Card className="hidden sm:block">
 				<CardHeader>
-					<CardTitle>Consultation Requests</CardTitle>
+					<CardTitle>Pending Consultation Requests</CardTitle>
 				</CardHeader>
 				<CardContent>
 					<div className="overflow-x-auto">
@@ -193,7 +193,6 @@ export default function RequestsPage() {
 							<TableHeader>
 								<TableRow>
 									<TableHead>Patient Name</TableHead>
-									<TableHead>Status</TableHead>
 									<TableHead className="text-right">Actions</TableHead>
 								</TableRow>
 							</TableHeader>
@@ -203,16 +202,13 @@ export default function RequestsPage() {
 										<TableCell>
 											<Skeleton className="h-4 w-[200px]" />
 										</TableCell>
-										<TableCell>
-											<Skeleton className="h-4 w-[80px]" />
-										</TableCell>
 										<TableCell className="text-right">
 											<Skeleton className="h-4 w-[150px]" />
 										</TableCell>
 									</TableRow>
 								) : error ? (
 									<TableRow key="error-row">
-										<TableCell colSpan={3} className="text-center text-red-500">
+										<TableCell colSpan={2} className="text-center text-red-500">
 											{error}
 										</TableCell>
 									</TableRow>
@@ -222,50 +218,34 @@ export default function RequestsPage() {
 											<TableCell className="font-medium">
 												{req.patient?.name || "N/A"}
 											</TableCell>
-											<TableCell className="capitalize">{req.status}</TableCell>
 											<TableCell className="text-right">
 												<div className="flex justify-end gap-2">
-													{req.status === "pending" && (
-														<>
-															<Button
-																variant="outline"
-																size="sm"
-																onClick={() =>
-																	handleUpdateRequest(req.id, "approved")
-																}
-															>
-																Approve
-															</Button>
-															<Button
-																variant="destructive"
-																size="sm"
-																onClick={() =>
-																	handleUpdateRequest(req.id, "rejected")
-																}
-															>
-																Reject
-															</Button>
-														</>
-													)}
-													{req.status === "approved" && (
-														<Button
-															variant="default"
-															size="sm"
-															onClick={() =>
-																handleCreateRecord(req.patient.blockchainId)
-															}
-														>
-															Create Record
-														</Button>
-													)}
+													<Button
+														variant="outline"
+														size="sm"
+														onClick={() =>
+															handleUpdateRequest(req.id, "approved")
+														}
+													>
+														Approve
+													</Button>
+													<Button
+														variant="destructive"
+														size="sm"
+														onClick={() =>
+															handleUpdateRequest(req.id, "rejected")
+														}
+													>
+														Reject
+													</Button>
 												</div>
 											</TableCell>
 										</TableRow>
 									))
 								) : (
 									<TableRow key="no-requests-row">
-										<TableCell colSpan={3} className="text-center">
-											No consultation requests found.
+										<TableCell colSpan={2} className="text-center">
+											No pending consultation requests found.
 										</TableCell>
 									</TableRow>
 								)}

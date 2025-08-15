@@ -1,107 +1,19 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useEffect } from "react"
 import { useAppSelector } from "@/store/hooks"
-import api from "@/services/api"
+import { useDashboardStats } from "@/hooks/useDashboardStats"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { FileText, Users, FileKey, Stethoscope, Bell } from "lucide-react"
 import { Skeleton } from "@/components/ui/skeleton"
 
-interface ConsentRecord {
-	consentId: string
-	docType: string
-	doctorId: string
-	grantedAt: string
-	patientId: string
-	recordId: string
-	revokedAt: string | null
-	status: string
-}
-
-interface ConsentItem {
-	key: string
-	record: ConsentRecord
-}
-
 export default function DashboardPage() {
 	const { user } = useAppSelector((state) => state.auth)
-	const [stats, setStats] = useState({
-		records: 0,
-		consents: 0,
-		consultations: 0,
-		requests: 0,
-		patients: 0,
-		accessibleRecords: 0,
-	})
-	const [isLoading, setIsLoading] = useState(true)
+	const { stats, isLoading, fetchStats } = useDashboardStats()
 
 	useEffect(() => {
-		const fetchStats = async () => {
-			if (!user?.role) {
-				setIsLoading(false)
-				return
-			}
-
-			setIsLoading(true)
-			try {
-				if (user.role === "patient") {
-					const [recordsRes, consentsRes, consultationsRes] = await Promise.all(
-						[
-							api.get("/records/mine"),
-							api.get("/records/consents/mine"),
-							api.get("/consultations/mine"),
-						]
-					)
-
-					const rawConsents: ConsentItem[] = consentsRes.data.payload || []
-					const activeConsents = rawConsents.filter(
-						(c) => c.record.status === "granted"
-					)
-					const uniqueConsentsMap = new Map<string, ConsentItem>()
-					activeConsents.forEach((consent) => {
-						const key = `${consent.record.recordId}-${consent.record.doctorId}`
-						const existing = uniqueConsentsMap.get(key)
-						if (
-							!existing ||
-							new Date(consent.record.grantedAt) >
-								new Date(existing.record.grantedAt)
-						) {
-							uniqueConsentsMap.set(key, consent)
-						}
-					})
-
-					setStats((prev) => ({
-						...prev,
-						records: recordsRes.data.payload?.length || 0,
-						consents: uniqueConsentsMap.size,
-						consultations:
-							consultationsRes.data.payload?.filter(
-								(c: { status: string }) => c.status === "pending"
-							).length || 0,
-					}))
-				} else if (user.role === "doctor") {
-					const [requestsRes, patientsRes, accessibleRecordsRes] =
-						await Promise.all([
-							api.get("/consultations/requests"),
-							api.get("/users/assigned-patients"),
-							api.get("/records/accessible"),
-						])
-					setStats((prev) => ({
-						...prev,
-						requests: requestsRes.data.payload?.length || 0,
-						patients: patientsRes.data?.length || 0,
-						accessibleRecords: accessibleRecordsRes.data.payload?.length || 0,
-					}))
-				}
-			} catch (error) {
-				console.error(`Failed to fetch ${user.role} dashboard stats:`, error)
-			} finally {
-				setIsLoading(false)
-			}
-		}
-
 		fetchStats()
 
 		// Refetch stats when the window gains focus to keep them up-to-date
@@ -111,7 +23,7 @@ export default function DashboardPage() {
 		return () => {
 			window.removeEventListener("focus", handleFocus)
 		}
-	}, [user])
+	}, [fetchStats])
 
 	const renderPatientDashboard = () => (
 		<>
