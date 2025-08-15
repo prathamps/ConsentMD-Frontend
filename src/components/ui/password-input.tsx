@@ -8,10 +8,19 @@ import { Input } from "./input"
 export interface PasswordInputProps
 	extends React.InputHTMLAttributes<HTMLInputElement> {
 	showStrengthIndicator?: boolean
+	disableAutofill?: boolean
 }
 
 const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(
-	({ className, showStrengthIndicator = false, ...props }, ref) => {
+	(
+		{
+			className,
+			showStrengthIndicator = false,
+			disableAutofill = false,
+			...props
+		},
+		ref
+	) => {
 		const [showPassword, setShowPassword] = React.useState(false)
 		const [password, setPassword] = React.useState("")
 
@@ -70,6 +79,8 @@ const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(
 						className={cn("pr-10", className)}
 						value={password}
 						onChange={handlePasswordChange}
+						autoComplete={disableAutofill ? "new-password" : "current-password"}
+						{...(disableAutofill && { "data-form-type": "other" })}
 					/>
 					<button
 						type="button"

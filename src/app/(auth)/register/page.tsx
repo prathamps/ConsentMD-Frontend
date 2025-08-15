@@ -29,36 +29,30 @@ import { toast } from "sonner"
 import { AxiosError } from "axios"
 import * as React from "react"
 
-const formSchema = z
-	.object({
-		name: z
-			.string()
-			.min(2, { message: "Full name must be at least 2 characters" }),
-		email: z.string().email({
-			message: "Please enter a valid email address.",
+const formSchema = z.object({
+	name: z
+		.string()
+		.min(2, { message: "Full name must be at least 2 characters" }),
+	email: z.string().email({
+		message: "Please enter a valid email address.",
+	}),
+	password: z
+		.string()
+		.min(8, { message: "Password must be at least 8 characters" })
+		.regex(/[A-Z]/, {
+			message: "Password must contain at least one uppercase letter",
+		})
+		.regex(/[a-z]/, {
+			message: "Password must contain at least one lowercase letter",
+		})
+		.regex(/\d/, { message: "Password must contain at least one number" })
+		.regex(/[!@#$%^&*(),.?":{}|<>]/, {
+			message: "Password must contain at least one special character",
 		}),
-		password: z
-			.string()
-			.min(8, { message: "Password must be at least 8 characters" })
-			.regex(/[A-Z]/, {
-				message: "Password must contain at least one uppercase letter",
-			})
-			.regex(/[a-z]/, {
-				message: "Password must contain at least one lowercase letter",
-			})
-			.regex(/\d/, { message: "Password must contain at least one number" })
-			.regex(/[!@#$%^&*(),.?":{}|<>]/, {
-				message: "Password must contain at least one special character",
-			}),
-		confirmPassword: z.string(),
-		role: z.enum(["patient", "doctor"], {
-			required_error: "You need to select a role.",
-		}),
-	})
-	.refine((data) => data.password === data.confirmPassword, {
-		message: "Passwords don't match",
-		path: ["confirmPassword"],
-	})
+	role: z.enum(["patient", "doctor"], {
+		required_error: "You need to select a role.",
+	}),
+})
 
 export default function RegisterForm() {
 	const router = useRouter()
@@ -72,7 +66,6 @@ export default function RegisterForm() {
 			name: "",
 			email: "",
 			password: "",
-			confirmPassword: "",
 			role: "patient",
 		},
 	})
@@ -185,23 +178,7 @@ export default function RegisterForm() {
 											<PasswordInput
 												placeholder="Create a strong password"
 												showStrengthIndicator={true}
-												{...field}
-											/>
-										</FormControl>
-										<FormMessage />
-									</FormItem>
-								)}
-							/>
-
-							<FormField
-								control={form.control}
-								name="confirmPassword"
-								render={({ field }) => (
-									<FormItem>
-										<FormLabel>Confirm Password</FormLabel>
-										<FormControl>
-											<PasswordInput
-												placeholder="Confirm your password"
+												disableAutofill={true}
 												{...field}
 											/>
 										</FormControl>
